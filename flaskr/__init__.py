@@ -15,6 +15,8 @@ def create_app():
     from .controller.Items import Items
 
     api.add_resource(Root, '/')
-    api.add_resource(Items, '/items', '/items/<name>')
+    api.add_resource(Items.FilterName, '/items', '/items/<name>')
+    api.add_resource(Items.FilterQuality, '/items/quality/<quality>')
+    api.add_resource(Items.FilterSellIn, '/items/sell_in/<sell_in>')
 
     return app
