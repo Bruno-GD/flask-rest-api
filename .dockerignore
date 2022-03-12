@@ -3,3 +3,6 @@
 venv/
 .gitignore
 README.md
+dev-requirements.txt
+pytest.ini
+test/
