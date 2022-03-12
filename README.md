@@ -3,7 +3,7 @@
 ## Instalación en local
 
 1. Clonar el repositorio
-2. Establecer las variables de entorno
+2. ~~Establecer las variables de entorno~~ Revisar el archivo `.flaskenv`
 ```
 FLASK_APP = "flaskr"
 FLASK_ENV = "development" # o "production"
