@@ -1,6 +1,7 @@
 import pytest
 from flaskr import create_app
 from json import loads
+from flask import g
 
 
 @pytest.fixture()
@@ -48,3 +49,13 @@ def test_item_sell_in(client):
     assert len(data) > 0, "Debería haber minimo 1 item"
     first_item = data[0]
     assert first_item['sell_in'] == 3, "'sell_in' no es correcto"
+
+
+@pytest.mark.items
+def test_new_item(client):
+    app = client.application
+    with app.app_context():
+        response = client.post("/items", data={"name": "Test", "quality": 1, "sell_in": 1})
+        assert response.status_code == 202
+        db = g.get('session')
+        db.rollback()
