@@ -39,8 +39,9 @@ class Database:
 
     @classmethod
     def close_db(cls, e=None):
-        db = g.get("session", None)
+        db = cls.get_db()
         if db is not None:
+            db.commit()
             db.close()
 
     @staticmethod
