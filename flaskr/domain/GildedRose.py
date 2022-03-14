@@ -1,9 +1,25 @@
-from .types import \
-    NormalItem,\
-    AgedBrieItem,\
-    BackstageItem,\
-    ConjuredItem,\
-    SulfurasItem
+from .types.NormalItem import NormalItem
+from .types.ConjuredItem import ConjuredItem
+from .types.SulfurasItem import Sulfuras
+from .types.BackstageItem import Backstage
+from .types.AgedBrieItem import AgedBrie
+
+
+# enum
+class Itemizer:
+    ITEM_OBJ = {
+        "Sulfuras, Hand of Ragnaros": Sulfuras,
+        "Aged Brie": AgedBrie,
+        "Backstage passes to a TAFKAL80ETC concert": Backstage,
+        "Conjured Mana Cake": ConjuredItem,
+        "+5 Dexterity Vest": ConjuredItem,
+    }
+
+    @classmethod
+    def get(cls, name: str, sell_in: int, quality: int) -> NormalItem:
+        if name in cls.ITEM_OBJ:
+            return cls.ITEM_OBJ[name](name, sell_in, quality)
+        return NormalItem(name, sell_in, quality)
 
 
 # Code extracted from: https://github.com/dfleta/flask-rest-ci-boilerplate
@@ -19,18 +35,15 @@ class GildedRose:
 
     def get_items(self) -> list:
         return self.items
+# end
 
     @staticmethod
-    def get_item_typeof(name: str, sell_in: int, quality: int) -> object:
-        org_name = name
-        name = name.lower()
-        if "brie" in name:
-            return AgedBrieItem.AgedBrie(org_name, sell_in, quality)
-        elif "backstage" in name:
-            return BackstageItem.Backstage(org_name, sell_in, quality)
-        elif "conjured" in name:
-            return ConjuredItem.ConjuredItem(org_name, sell_in, quality)
-        elif "sulfuras" in name:
-            return SulfurasItem.Sulfuras(org_name, sell_in, quality)
-        else:
-            return NormalItem.NormalItem(org_name, sell_in, quality)
+    def get_item_typeof(name: str, sell_in: int, quality: int, **kwargs) -> NormalItem:
+        return Itemizer.get(name, sell_in, quality)
+
+    @classmethod
+    def get_items_typeof(cls, raw_items: list[dict]) -> list[NormalItem]:
+        items = []
+        for raw_item in raw_items:
+            items.append(cls.get_item_typeof(**raw_item))
+        return items
