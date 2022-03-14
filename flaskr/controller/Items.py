@@ -1,8 +1,9 @@
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
-from flask import abort, make_response
+from flask import abort, make_response, g
 from flaskr.repository.database import Database
 from flaskr.repository.types.Item import Item
+from flaskr.domain.GildedRose import GildedRose
 
 
 class Items(Resource):
@@ -57,3 +58,14 @@ class Items(Resource):
                 return [item.serialized for item in items]
 
             return abort(400, "'sell_in' should be a number")
+
+    class UpdateQuality(Resource):
+        def get(self):
+            if 'shop' not in g:
+                db = Database.get_db()
+                items = [item.serialized for item in db.query(Item).all()]
+                g.shop = GildedRose(GildedRose.get_items_typeof(items))
+
+            g.shop.update_quality()
+
+            return make_response("Updated", 200)
