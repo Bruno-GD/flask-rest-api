@@ -59,3 +59,17 @@ def test_new_item(client):
         assert response.status_code == 202
         db = g.get('session')
         db.rollback()
+
+
+@pytest.mark.items
+def test_update_quality(client):
+    app = client.application
+    with app.app_context():
+        assert client.get("/update_quality").status_code == 200, "Status code erroneo"
+        assert 'shop' in g, 'No existe shop en el contexto'
+        quality_first_item = g.shop.items[0].quality
+        assert client.get("/update_quality").status_code == 200, "Status code erroneo"
+        assert quality_first_item != g.shop.items[0].quality, "No ha cambiado la calidad"
+
+        db = g.get('session')
+        db.rollback()
