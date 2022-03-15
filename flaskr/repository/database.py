@@ -16,7 +16,8 @@ class Database:
         from sqlalchemy.orm import sessionmaker
 
         # load .env file environment variables
-        load_dotenv()
+        if getenv("MYSQL_CONNECTION_STRING", None) is None:
+            load_dotenv()
 
         # get SQL Server connection string from .env
         mysql_connection_string = getenv("MYSQL_CONNECTION_STRING")
