@@ -23,6 +23,7 @@ def create_app():
     api.add_resource(Root, '/')
     api.add_resource(Items, '/items')
     api.add_resource(Items.FilterName, '/items/name/<name>')
+    api.add_resource(Items.Delete, '/items/name/<name>/delete')
     api.add_resource(Items.FilterQuality, '/items/quality/<int:quality>')
     api.add_resource(Items.FilterSellIn, '/items/sell_in/<int:sell_in>')
     api.add_resource(Items.UpdateQuality, '/update_quality')
