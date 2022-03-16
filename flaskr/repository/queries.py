@@ -40,3 +40,8 @@ class Query(Database):
         new_item = Item(**item)
         db.add(new_item)
         return new_item.serialized
+
+    @classmethod
+    def delete_all(cls, filter_by: dict[str, any]) -> None:
+        db = cls.get_db()
+        db.query(Item).filter_by(**filter_by).delete()
