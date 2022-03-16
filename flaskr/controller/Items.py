@@ -54,4 +54,10 @@ class Items(Resource):
 
             g.shop.update_quality()
 
-            return make_response("Updated", 200)
+            return make_response("Updated", 202)
+
+    class Delete(Resource):
+
+        def delete(self, name: str = None):
+            Query.delete_all({"name": name})
+            return make_response("Deleted", 202)
