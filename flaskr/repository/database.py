@@ -1,6 +1,5 @@
 from flask import g
 from .types.Item import Item
-from sqlalchemy import insert
 from sqlalchemy.orm.session import Session  # just for annotations
 import click
 
