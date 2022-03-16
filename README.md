@@ -24,14 +24,11 @@ $ python -m pip install -r requirements.txt
 $ flask run
 ```
 
-## Instalación con Dockerfile
+## Instalación con Docker(-compose)
 
 1. Clonar el repositorio
-2. Crear la imagen de docker
+2. Ejecutar el docker-compose.yml
 ```shell
-$ docker build -t flaskr .
+$ docker compose up 
 ```
-3. Ejecutar el contenedor de docker
-```shell
-$ docker run --rm -d -p 5000:5000 --name rest_api flaskr
-```
+_Esto creará dos contenedores, uno para MariaDB (MySQL Server) y otro para Flask_
