@@ -1,6 +1,7 @@
 import pytest
 from json import loads
 from flask import g
+from flaskr.repository.types.Item import Item
 
 
 @pytest.mark.items
@@ -42,8 +43,6 @@ def test_new_item(client):
 
         # obtenemos la sesion
         db = g.get('session')
-        # importamos el type Item para sqlalchemy
-        from flaskr.repository.types.Item import Item
         # buscamos el item insertado antes en el post
         item = db.query(Item).filter_by(name="Test").one_or_none()
         assert item is not None, "No está el item"
@@ -62,4 +61,15 @@ def test_update_quality(client):
         assert quality_first_item != g.shop.items[0].quality, "No ha cambiado la calidad"
 
         db = g.get('session')
+        db.rollback()
+
+
+@pytest.mark.items
+def test_delete_item(client):
+    app = client.application
+    with app.app_context():
+        assert client.delete("/items/name/Aged%20Brie/delete").status_code == 202, "Status code erroneo"
+        assert 'session' in g, "No hay db"
+        db = g.get('session')
+        assert db.query(Item).filter_by(name="Aged Brie").one_or_none() is None, "No se ha borrado"
         db.rollback()
