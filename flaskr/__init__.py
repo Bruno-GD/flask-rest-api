@@ -9,7 +9,7 @@ def create_app():
 
     # register cli commands
     from .repository.database import Database
-    app.cli.add_command(Database.init_db, "init-db")
+    app.cli.add_command(Database.init_db_cmd, "init-db")
 
     # init api
     api = Api(app)
