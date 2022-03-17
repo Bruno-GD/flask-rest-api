@@ -1,5 +1,6 @@
 import pytest
 from flaskr import create_app
+from flaskr.repository.database import Database
 
 
 @pytest.fixture()
@@ -20,3 +21,16 @@ def client(app):
 @pytest.fixture()
 def runner(app):
     return app.test_cli_runner()
+
+
+@pytest.fixture(autouse=True)
+def before_and_after(client):
+    with client.application.app_context():
+        # Setup database before test
+        db = Database.get_db()
+        try:
+            # Run test
+            yield
+        finally:
+            # Rollback database after test
+            db.rollback()
