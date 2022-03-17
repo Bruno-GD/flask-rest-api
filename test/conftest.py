@@ -23,10 +23,14 @@ def runner(app):
     return app.test_cli_runner()
 
 
-@pytest.fixture(autouse=True)
-def before_and_after(client):
+@pytest.fixture(scope="session", autouse=True)
+def init_db():
     # Clear "items" table & insert default items
     Database.init_db()
+
+
+@pytest.fixture(autouse=True)
+def before_and_after(client):
     with client.application.app_context():
         # Setup database before test
         db = Database.get_db()
