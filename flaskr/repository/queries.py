@@ -45,3 +45,8 @@ class Query(Database):
     def delete_all(cls, filter_by: dict[str, any]) -> None:
         db = cls.get_db()
         db.query(Item).filter_by(**filter_by).delete()
+
+    @classmethod
+    def update_all(cls, filter_by: dict[str, any], new_data: dict[str, any]) -> None:
+        db = cls.get_db()
+        db.query(Item).filter_by(**filter_by).update(new_data)
