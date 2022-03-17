@@ -52,7 +52,7 @@ class Items(Resource):
                 items = Query.get_all()
                 g.shop = GildedRose(GildedRose.get_items_typeof(items))
 
-            g.shop.update_quality()
+            g.shop.update_quality(Query.update_all)
 
             return make_response("Updated", 202)
 
