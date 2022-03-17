@@ -1,7 +1,7 @@
+import click
 from flask import g
 from .types.Item import Item
 from sqlalchemy.orm.session import Session  # just for annotations
-import click
 
 
 class Database:
@@ -44,10 +44,9 @@ class Database:
             db.commit()
             db.close()
 
-    @staticmethod
-    @click.command()
-    def init_db():
-        db = Database.get_session()
+    @classmethod
+    def init_db(cls):
+        db = cls.get_session()
         db.execute("DROP TABLE IF EXISTS `items`")
         db.execute("""CREATE TABLE IF NOT EXISTS `items` (
                        `id` INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -67,3 +66,8 @@ class Database:
         ]
         db.add_all(insert_queries)
         db.commit()
+
+    @classmethod
+    @click.command()
+    def init_db_cmd(cls):
+        cls.init_db()
