@@ -36,40 +36,32 @@ def test_item_sell_in(client):
 
 @pytest.mark.items
 def test_new_item(client):
-    app = client.application
-    with app.app_context():
-        response = client.post("/items", data={"name": "Test", "quality": 1, "sell_in": 1})
-        assert response.status_code == 202
+    response = client.post("/items", data={"name": "Test", "quality": 1, "sell_in": 1})
+    assert response.status_code == 202
 
-        # obtenemos la sesion
-        db = g.get('session')
-        # buscamos el item insertado antes en el post
-        item = db.query(Item).filter_by(name="Test").one_or_none()
-        assert item is not None, "No está el item"
-        # borramos los cambios
-        db.rollback()
+    # obtenemos la sesion
+    db = g.get('session')
+    # buscamos el item insertado antes en el post
+    item = db.query(Item).filter_by(name="Test").one_or_none()
+    assert item is not None, "No está el item"
 
 
 @pytest.mark.items
 def test_update_quality(client):
-    app = client.application
-    with app.app_context():
-        assert client.get("/update_quality").status_code == 200, "Status code erroneo"
-        assert 'shop' in g, 'No existe shop en el contexto'
-        quality_first_item = g.shop.items[0].quality
-        assert client.get("/update_quality").status_code == 200, "Status code erroneo"
-        assert quality_first_item != g.shop.items[0].quality, "No ha cambiado la calidad"
-
-        db = g.get('session')
-        db.rollback()
+    db = g.get("session")
+    old_item_quality = db.query(Item).filter_by(name="+5 Dexterity Vest").first().quality
+    assert client.get("/update_quality").status_code == 202, "Status code erroneo"
+    assert 'shop' in g, 'No existe shop en el contexto'
+    quality_first_item = g.shop.items[0].quality
+    assert client.get("/update_quality").status_code == 202, "Status code erroneo"
+    assert quality_first_item != g.shop.items[0].quality, "No ha cambiado la calidad"
+    updated_item_quality = db.query(Item).filter_by(name="+5 Dexterity Vest").first().quality
+    assert old_item_quality != updated_item_quality, "La calidad no ha cambiado"
 
 
 @pytest.mark.items
 def test_delete_item(client):
-    app = client.application
-    with app.app_context():
-        assert client.delete("/items/name/Aged%20Brie/delete").status_code == 202, "Status code erroneo"
-        assert 'session' in g, "No hay db"
-        db = g.get('session')
-        assert db.query(Item).filter_by(name="Aged Brie").one_or_none() is None, "No se ha borrado"
-        db.rollback()
+    assert client.delete("/items/name/Aged%20Brie/delete").status_code == 202, "Status code erroneo"
+    assert 'session' in g, "No hay db"
+    db = g.get('session')
+    assert db.query(Item).filter_by(name="Aged Brie").one_or_none() is None, "No se ha borrado"
