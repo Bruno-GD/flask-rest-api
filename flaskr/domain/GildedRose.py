@@ -22,20 +22,22 @@ class Itemizer:
         return NormalItem(name, sell_in, quality)
 
 
-# Code extracted from: https://github.com/dfleta/flask-rest-ci-boilerplate
 class GildedRose:
 
     def __init__(self, items):
         self.items = items
 
-    def update_quality(self) -> None:
+    def update_quality(self, onupdate=None) -> None:
         for item in self.items:
-            # qué items hay en este if? => clases
+            item: NormalItem  # annotation
+            old_item = {"name": item.name, "quality": item.quality, "sell_in": item.sell_in}
             item.update_quality()
+            new_item = {"name": item.name, "quality": item.quality, "sell_in": item.sell_in}
+            if onupdate:
+                onupdate(old_item, new_item)
 
     def get_items(self) -> list:
         return self.items
-# end
 
     @staticmethod
     def get_item_typeof(name: str, sell_in: int, quality: int, **kwargs) -> NormalItem:
